@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>US State Mission Guessing Game</title>
+<style>
+body {
+  font-family: sans-serif;
+  transition: background-color 0.5s ease;
+}
+body.light-yellow {
+  background-color: #FFFFE0; /* Light yellow */
+}
+body.light-orange {
+  background-color: #FFDAB9; /* Light orange */
+}
+body.dark-orange {
+  background-color: #FFA500; /* Dark orange */
+}
+body.light-red {
+  background-color: #FFC0CB; /* Light red */
+}
+body.light-green {
+  background-color: #90EE90; /* Light green */
+}
+#game-container {
+  width: 300px;
+  margin: 0 auto;
+  text-align: center;
+}
+.hidden {
+  display: none;
+}
+</style>
+</head>
+<body class="light-yellow">
+<div id="game-container">
+  <h1>US State Mission Guessing Game</h1>
+  <p id="game-instructions">Guess the state you've been assigned to serve in!</p>
+  <div id="guess-section">
+    <input type="text" id="guess" placeholder="Enter your guess">
+    <button onclick="checkGuess()">Guess</button>
+  </div>
+  <p id="message"></p>
+  <p id="hints"></p>
+  <p id="guessesLeft"></p>
+  <button id="playAgainButton" class="hidden" onclick="startGame()">Play Again</button>
+</div>
+
+<script>
+const states = [
+  "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
+  "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
+  "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana",
+  "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota",
+  "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire",
+  "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota",
+  "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina",
+  "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia",
+  "Washington", "West Virginia", "Wisconsin", "Wyoming"
+];
+
+let secretState;
+let guessesRemaining;
+
+function startGame() {
+  secretState = states[Math.floor(Math.random() * states.length)];
+  guessesRemaining = 3;
+  document.body.className = "light-yellow";
+  document.getElementById("message").textContent = "";
+  document.getElementById("hints").textContent = "";
+  document.getElementById("guessesLeft").textContent = `Guesses left: ${guessesRemaining}`;
+  document.getElementById("game-instructions").textContent = "Guess the state you've been assigned to serve in!";
+  document.getElementById("guess-section").classList.remove("hidden");
+  document.getElementById("playAgainButton").classList.add("hidden");
+  document.getElementById("guess").value = "";
+}
+
+function checkGuess() {
+  const guess = document.getElementById("guess").value.trim().toLowerCase();
+  const correctAnswer = secretState.toLowerCase();
+
+  if (guess === correctAnswer) {
+    endGame("light-green", `Congratulations! You guessed correctly!`);
+  } else {
+    guessesRemaining--;
+    if (guessesRemaining > 0) {
+      const hint = guessesRemaining === 2
+        ? `Hint: The first letter is ${secretState.charAt(0)}.`
+        : `Hint: The first two letters are ${secretState.substring(0, 2)}.`;
+      const color = guessesRemaining === 2 ? "light-orange" : "dark-orange";
+      updateUI(color, "Incorrect guess.", hint, `Guesses left: ${guessesRemaining}`);
+    } else {
+      endGame("light-red", `Game Over. The state was ${secretState}.`);
+    }
+  }
+}
+
+function updateUI(color, message, hint, guessesLeft) {
+  document.body.className = color;
+  document.getElementById("message").textContent = message;
+  document.getElementById("hints").textContent = hint;
+  document.getElementById("guessesLeft").textContent = guessesLeft;
+  document.getElementById("guess").value = "";
+}
+
+function endGame(color, finalMessage) {
+  document.body.className = color;
+  document.getElementById("message").textContent = finalMessage;
+  document.getElementById("hints").textContent = "";
+  document.getElementById("guessesLeft").textContent = "";
+  document.getElementById("guess-section").classList.add("hidden");
+  document.getElementById("playAgainButton").classList.remove("hidden");
+}
+
+startGame();
+</script>
+</body>
+</html>
